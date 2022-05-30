@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tcp-loadbalancer
+  annotations:
+    oci.oraclecloud.com/load-balancer-type: "lb"
+    service.beta.kubernetes.io/oci-load-balancer-shape: 10Mbps
+spec:
+  type: LoadBalancer
+  selector:
+    app: traefik
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+    - name: https
+      port: 443
+      targetPort: 8443
