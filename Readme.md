@@ -1,4 +1,4 @@
-## Yaml files for their deployment on Kubernetes
+# Yaml files for their deployment on Kubernetes
 
-# Custom SQUID Proxy
-# Traefik
+## Custom SQUID Proxy
+## Traefik
