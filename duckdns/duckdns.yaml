@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: duckdns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: duckdns-NodeName
+  namespace: duckdns
+spec:
+  selector:
+    matchLabels:
+      app: duckdns-NodeName
+  template:
+    metadata:
+      labels:
+        app: duckdns-NodeName
+    spec:
+      containers:
+      - name: duckdns
+        image: lscr.io/linuxserver/duckdns:latest
+        env:
+          - name: TOKEN
+            value: SECRET_TOKEN / USE SECRET
+          - name: SUBDOMAINS
+            value: SUBDOMAIN.duckdns.org
+      nodeName: NodeName
