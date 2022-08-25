@@ -1,3 +1,4 @@
-## Kubernetes yaml deployment for test 
+# Yaml files for their deployment on Kubernetes
 
-# Customer SQUID Proxy
+## Custom SQUID Proxy
+## Traefik
