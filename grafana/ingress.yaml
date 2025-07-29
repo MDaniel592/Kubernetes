@@ -1,0 +1,21 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-dashboard
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.grafana.nodes-lb-arm.duckdns.org`) 
+      kind: Rule
+      services:
+        - name: kube-prometheus-stack-1662817876-grafana
+          port: 80
+    - match: Host(`grafana.nodes-lb-arm.duckdns.org`) 
+      kind: Rule
+      services:
+        - name: kube-prometheus-stack-1662817876-grafana
+          port: 80
+  tls:
+    certResolver: le

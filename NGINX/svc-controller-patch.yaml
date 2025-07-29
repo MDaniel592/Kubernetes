@@ -1,0 +1,6 @@
+spec:
+  ports:
+  - nodePort: 5432
+    port: 5432
+    name: postgres
+

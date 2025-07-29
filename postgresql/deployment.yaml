@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-prod
+  namespace: postgres
+  labels:
+    app: postgres-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-prod
+  template:
+    metadata:
+      labels:
+        app: postgres-prod
+    spec:
+      restartPolicy: Always
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            example: app
+      containers:
+      - name: postgres
+        image: postgres:latest
+        ports:
+          - containerPort: 5432
+            protocol: TCP
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        volumeMounts:
+          - name: postgresql-volume
+            mountPath: /var/lib/postgresql/data
+            subPath: postgres
+          - name: postgresql-config-volume
+            mountPath: /etc/postgresql/postgresql.conf
+            subPath: postgresql.conf
+          - name: postgresql-config-volume
+            mountPath: /etc/postgresql/pg_hba.conf
+            subPath: pg_hba.conf     
+          - name: postgresql-config-volume
+            mountPath: /docker-entrypoint-initdb.d/extra.sh
+            subPath: extra.sh
+        # args:
+        #   - "-c"
+        #   - "config_file=/var/lib/postgresql/postgresql.conf"
+        #   - "-c"
+        #   - "hba_file=/var/lib/postgresql/pg_hba.conf"
+
+      volumes:
+      - name: postgresql-volume
+        persistentVolumeClaim:
+          claimName: postgresql
+      - name: postgresql-config-volume
+        configMap:
+          name: postgres-config

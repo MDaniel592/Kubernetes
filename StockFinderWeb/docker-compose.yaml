@@ -1,0 +1,53 @@
+version: "3.5"
+services:
+
+
+  stockfinder_backend:
+    build: ./flask_back
+    image: stockfinder_backend:latest
+    container_name: stockfinder_backend
+    restart: always
+    ports:
+      - 6000:6000
+    networks:
+      localproxy:
+        ipv4_address: "10.10.0.110"
+
+  stockfinder_frontend:
+    build: ./nextjs_front
+    image: stockfinder_frontend:latest
+    container_name: stockfinder_frontend
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      remoteproxy:
+        ipv4_address: "10.20.0.120"
+      localproxy:
+        ipv4_address: "10.10.0.120"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.stockfinder_frontend.rule: Host(`stockfinder.tech`) || Host(`wwww.stockfinder.tech`)
+      traefik.http.routers.stockfinder_frontend.entrypoints: http
+      traefik.http.middlewares.stockfinder_frontend-https-redirect.redirectscheme.scheme: https
+      traefik.http.routers.stockfinder_frontend.middlewares: stockfinder_frontend-https-redirect
+      traefik.http.routers.stockfinder_frontend-secure.entrypoints: https
+      traefik.http.routers.stockfinder_frontend-secure.rule: Host(`stockfinder.tech`) || Host(`wwww.stockfinder.tech`)
+      traefik.http.routers.stockfinder_frontend-secure.tls: true
+      traefik.http.routers.stockfinder_frontend-secure.service: stockfinder_frontend
+      traefik.http.services.stockfinder_frontend.loadbalancer.server.port: 3000
+      traefik.docker.network: remoteproxy
+
+networks:
+  remoteproxy:
+    name: remoteproxy
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.20.0.0/24
+  localproxy:
+    name: localproxy
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/24

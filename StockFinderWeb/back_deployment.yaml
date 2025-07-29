@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockfinder_backend
+  labels:
+    app: stockfinder_backend
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: stockfinder_backend
+  template:
+    metadata:
+      labels:
+        app: stockfinder_backend
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: stockfinder_backend
+      containers:
+      - name: squid
+        image: stockfinder_backend
+        ports:
+          - containerPort: 3128
+            name: squid
+            protocol: TCP
+

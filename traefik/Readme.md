@@ -1,0 +1,1 @@
+helm install cert-manager-webhook-duckdns --namespace cert-manager --set duckdns.token='**' --set clusterIssuer.production.create=true --set clusterIssuer.staging.create=true --set clusterIssuer.email='stocktracker.web@gmail.com' --set logLevel=2 ./deploy/cert-manager-webhook-duckdns

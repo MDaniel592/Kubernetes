@@ -7,23 +7,95 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: duckdns-NodeName
+  name: inst-ni796-duckdns
   namespace: duckdns
 spec:
   selector:
     matchLabels:
-      app: duckdns-NodeName
+      app: inst-ni796-k3s-servers
   template:
     metadata:
       labels:
-        app: duckdns-NodeName
+        app: inst-ni796-k3s-servers
     spec:
       containers:
       - name: duckdns
         image: lscr.io/linuxserver/duckdns:latest
         env:
           - name: TOKEN
-            value: SECRET_TOKEN / USE SECRET
+            value: deleted
           - name: SUBDOMAINS
-            value: SUBDOMAIN.duckdns.org
-      nodeName: NodeName
+            value: node0-arm.duckdns.org
+      nodeName: inst-ni796-k3s-servers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inst-xzr71-duckdns
+  namespace: duckdns
+spec:
+  selector:
+    matchLabels:
+      app: inst-xzr71-k3s-servers
+  template:
+    metadata:
+      labels:
+        app: inst-xzr71-k3s-servers
+    spec:
+      containers:
+      - name: duckdns
+        image: lscr.io/linuxserver/duckdns:latest
+        env:
+          - name: TOKEN
+            value: deleted
+          - name: SUBDOMAINS
+            value: node1-arm.duckdns.org
+      nodeName: inst-xzr71-k3s-servers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inst-r5fgi-duckdns
+  namespace: duckdns
+spec:
+  selector:
+    matchLabels:
+      app: inst-r5fgi-k3s-workers
+  template:
+    metadata:
+      labels:
+        app: inst-r5fgi-k3s-workers
+    spec:
+      containers:
+      - name: duckdns
+        image: lscr.io/linuxserver/duckdns:latest
+        env:
+          - name: TOKEN
+            value: deleted
+          - name: SUBDOMAINS
+            value: node2-arm.duckdns.org
+      nodeName: inst-r5fgi-k3s-workers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inst-szcrh-duckdns
+  namespace: duckdns
+spec:
+  selector:
+    matchLabels:
+      app: inst-szcrh-k3s-workers
+  template:
+    metadata:
+      labels:
+        app: inst-szcrh-k3s-workers
+    spec:
+      containers:
+      - name: duckdns
+        image: lscr.io/linuxserver/duckdns:latest
+        env:
+          - name: TOKEN
+            value: deleted
+          - name: SUBDOMAINS
+            value: node3-arm.duckdns.org
+      nodeName: inst-szcrh-k3s-workers

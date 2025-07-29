@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: postgres
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: deleted
+  pg_hba.conf: |
+    local   all             postgres                                peer
+    local   all             all                                     peer
+    host    all             all             127.0.0.1/32            scram-sha-256
+    host    all             all             ::1/128                 scram-sha-256
+    host    all             all             100.10.0.1/32            scram-sha-256
+    # Allow replication connections from localhost, by a user with the
+    # replication privilege.
+    local   replication     all                                     peer
+    host    replication     all             127.0.0.1/32            scram-sha-256
+    host    replication     all             ::1/128                 scram-sha-256
+    # Netcup Server
+    host    replication     replicator_docker     */32       trust
+    # Remote
+    host    stocktracker   custom              */32      scram-sha-256
+  postgresql.conf: |
+    data_directory = '/var/lib/postgresql/data'		# use data in another directory
+    hba_file = '/etc/postgresql/pg_hba.conf'	# host-based authentication file
+    external_pid_file = '/var/run/postgresql/14-main.pid'			# write an extra PID file
+    listen_addresses = '*'		# what IP address(es) to listen on;
+    port = 5432				# (change requires restart)
+    unix_socket_directories = '/var/run/postgresql'	# comma-separated list of directories
+    ssl = on
+    ssl_cert_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+    ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key'
+    max_connections = 1000
+    shared_buffers = 128MB
+    effective_cache_size = 256MB
+    maintenance_work_mem = 2GB
+    checkpoint_completion_target = 0.7
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 4063kB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+    max_worker_processes = 12
+    max_parallel_workers_per_gather = 4
+    primary_conninfo = 'user=replicator_docker port=5432 host=202.61.228.224'			# connection string to sending server
+    primary_slot_name = 'replication_slot_docker'			# replication slot on sending server
+    hot_standby = on			# "off" disallows queries during recovery
+    log_line_prefix = '%m [%p] %q%u@%d '		# special values:
+    log_timezone = 'Europe/Madrid'
+    cluster_name = 'data'			# added to process titles if nonempty
+    datestyle = 'iso, dmy'
+    timezone = 'Europe/Madrid'
+    lc_messages = 'en_US.UTF-8'			# locale for system error message
+    lc_monetary = 'en_US.UTF-8'			# locale for monetary formatting
+    lc_numeric = 'en_US.UTF-8'			# locale for number formatting
+    lc_time = 'en_US.UTF-8'				# locale for time formatting
+    default_text_search_config = 'pg_catalog.english'
+  extra.sh: |
+    #!/bin/sh
+    postgres -c config_file=/etc/postgresql/postgresql.conf

@@ -1,0 +1,194 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: squid-service-node0-arm
+  labels:
+    app: squid-node0-arm
+spec:
+  type: NodePort
+  ports:
+    - port: 31280
+      targetPort: 3128
+      nodePort: 31280
+  selector:
+    app: squid-node0-arm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: squid-service-node1-arm
+  labels:
+    app: squid-node1-arm
+spec:
+  type: NodePort
+  ports:
+    - port: 31280
+      targetPort: 3128
+      nodePort: 31281
+  selector:
+    app: squid-node1-arm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: squid-service-node2-arm
+  labels:
+    app: squid-node2-arm
+spec:
+  type: NodePort
+  ports:
+    - port: 31280
+      targetPort: 3128
+      nodePort: 31282
+  selector:
+    app: squid-node2-arm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: squid-service-node3-arm
+  labels:
+    app: squid-node3-arm
+spec:
+  type: NodePort
+  ports:
+    - port: 31280
+      targetPort: 3128
+      nodePort: 31283
+  selector:
+    app: squid-node3-arm
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-deployment-node0-arm
+spec:
+  selector:
+    matchLabels:
+      app: squid-node0-arm
+  template:
+    metadata:
+      labels:
+        app: squid-node0-arm
+    spec:
+      containers:
+        - name: squid
+          image: ubuntu/squid:5.2-22.04_beta
+          ports:
+            - containerPort: 3128
+              name: squid
+              protocol: TCP
+          volumeMounts:
+            - name: squid-config-volume
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf
+      volumes:
+        - name: squid-config-volume
+          configMap:
+            name: squid-config
+            items:
+              - key: squid
+                path: squid.conf
+      nodeName: inst-ni796-k3s-servers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-deployment-node1-arm
+spec:
+  selector:
+    matchLabels:
+      app: squid-node1-arm
+  template:
+    metadata:
+      labels:
+        app: squid-node1-arm
+    spec:
+      containers:
+        - name: squid
+          image: ubuntu/squid:5.2-22.04_beta
+          ports:
+            - containerPort: 3128
+              name: squid
+              protocol: TCP
+          volumeMounts:
+            - name: squid-config-volume
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf
+
+      volumes:
+        - name: squid-config-volume
+          configMap:
+            name: squid-config
+            items:
+              - key: squid
+                path: squid.conf
+      nodeName: inst-xzr71-k3s-servers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-deployment-node2-arm
+spec:
+  selector:
+    matchLabels:
+      app: squid-node2-arm
+  template:
+    metadata:
+      labels:
+        app: squid-node2-arm
+    spec:
+      containers:
+        - name: squid
+          image: ubuntu/squid:5.2-22.04_beta
+          ports:
+            - containerPort: 3128
+              name: squid
+              protocol: TCP
+          volumeMounts:
+            - name: squid-config-volume
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf
+
+      volumes:
+        - name: squid-config-volume
+          configMap:
+            name: squid-config
+            items:
+              - key: squid
+                path: squid.conf
+      nodeName: inst-r5fgi-k3s-workers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-deployment-node3-arm
+spec:
+  selector:
+    matchLabels:
+      app: squid-node3-arm
+  template:
+    metadata:
+      labels:
+        app: squid-node3-arm
+    spec:
+      containers:
+        - name: squid
+          image: ubuntu/squid:5.2-22.04_beta
+          ports:
+            - containerPort: 3128
+              name: squid
+              protocol: TCP
+          volumeMounts:
+            - name: squid-config-volume
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf
+
+      volumes:
+        - name: squid-config-volume
+          configMap:
+            name: squid-config
+            items:
+              - key: squid
+                path: squid.conf
+      nodeName: inst-szcrh-k3s-workers

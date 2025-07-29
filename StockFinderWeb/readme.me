@@ -1,0 +1,4 @@
+root@node0-arm:~/kubernetes/StockFinderWeb# docker tag stockfinder_frontend:latest localhost:5000/stockfinder_frontend
+root@node0-arm:~/kubernetes/StockFinderWeb# docker push localhost:5000/stockfinder_frontend
+root@node0-arm:~/kubernetes/StockFinderWeb# kubectl delete -f front_deployment.yaml 
+root@node0-arm:~/kubernetes/StockFinderWeb# kubectl apply -f front_deployment.yaml 

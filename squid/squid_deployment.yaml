@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-proxy
+  labels:
+    app: squid-proxy
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: squid-proxy
+  template:
+    metadata:
+      labels:
+        app: squid-proxy
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: squid-proxy
+      containers:
+      - name: squid
+        image: ubuntu/squid:5.2-22.04_beta
+        ports:
+          - containerPort: 3128
+            name: squid
+            protocol: TCP
+        volumeMounts:
+          - name: squid-config-volume
+            mountPath: /etc/squid/squid.conf
+            subPath: squid.conf
+      volumes:
+      - name: squid-config-volume
+        configMap:
+          name: squid-config
+          items:
+            - key: squid
+              path: squid.conf

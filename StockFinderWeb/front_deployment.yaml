@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockfinder.nextjs.front
+  labels:
+    app: stockfinder.nextjs.front
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: stockfinder.nextjs.front
+  template:
+    metadata:
+      labels:
+        app: stockfinder.nextjs.front
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: stockfinder.nextjs.front
+      containers:
+      - name: frontend
+        image: localhost:5000/stockfinder_frontend
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 3000
+            name: frontend
+            protocol: TCP
+
